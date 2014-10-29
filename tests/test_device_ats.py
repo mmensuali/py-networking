@@ -53,14 +53,24 @@ def tftp_server_for_ever(port, tftp_server_dir):
 
 
 def setup_test_firmware_upgrade(dut, image_name):
-    dut.tftp_port = 69
     if (dut.mode == 'emulated'):
         # Wait an answer from the device in case of reboot during emulation.
         dut.dontwait = False
         # Only root users can access port 69, that is mandatory for TFTP upload.
         # Normal users like Travis can rely on other ports but greater than 1024.
-        if (getpass.getuser() != 'root'):
+        if (getpass.getuser() == 'root'):
+            dut.tftp_port = 69
+        else:
             dut.tftp_port = 20069
+            while dut.tftp_port < 65536:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                result = s.connect_ex(('127.0.0.1', dut.tftp_port))
+                s.close()
+                if (result > 0):
+                    print 'port {0} is available'.format(dut.tftp_port)
+                    break
+                dut.tftp_port = dut.tftp_port + 1
+
         # Create a dummy image file to be uploaded.
         myfile = open(image_name, 'w')
         myfile.write('1')
@@ -69,6 +79,7 @@ def setup_test_firmware_upgrade(dut, image_name):
         # Don't wait an answer from the device in case of reboot.
         dut.dontwait = True
         # Only root users can access port 69, that is mandatory for TFTP upload.
+        dut.tftp_port = 69
         assert 'root' == getpass.getuser()
 
     client_dir = './tftp_client_dir'

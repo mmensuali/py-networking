@@ -45,11 +45,22 @@ Unit     Up time
 Unit Number:   1
 Serial number:
     """]})
-    if (dut.mode != 'emulated'):
+    if (dut.mode == 'emulated'):
+        if (getpass.getuser() == 'root'):
+            dut.tftp_port = 69
+        else:
+            dut.tftp_port = 20069
+            while dut.tftp_port < 65536:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                result = s.connect_ex(('127.0.0.1', dut.tftp_port))
+                s.close()
+                if (result > 0):
+                    print 'port {0} is available'.format(dut.tftp_port)
+                    break
+                dut.tftp_port = dut.tftp_port + 1
+    else:
+        dut.tftp_port = 69
         assert 'root' == getpass.getuser()
-    dut.tftp_port = 69
-    if (getpass.getuser() != 'root'):
-        dut.tftp_port = 20069
 
     client_dir = './tftp_client_dir'
     server_dir = './tftp_server_dir'
