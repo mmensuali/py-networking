@@ -41,6 +41,11 @@ class Device(object):
         self._port = port
 
         self._mock_test = self._get_mock_opt(mock.lower())
+        if self._mock_test is False:
+            self.func_dict = {'open': self._open, 'close': self._close}
+        else:
+            self._proxy_connection_timeout = 1000
+            self.func_dict = {'open': self._mocked_open, 'close': self._mocked_close}
 
         self._log_level = getattr(logging, log_level.upper())
         hdl = logging.StreamHandler()
@@ -108,16 +113,11 @@ class Device(object):
 
     def open(self):
         self.log_info("open")
-        if self._mock_test is False:
-            self._open()
-        else:
-            self._mocked_open()  # pragma: no cover
+        self.func_dict['open']()
 
     def close(self):
         self.log_info("close")
-        if isinstance(self._proxy, Process) and (isinstance(self._proxy, Process) and self._proxy.is_alive()):
-            self.cmd({'cmds': [{'cmd': '_exit', 'prompt': ''}]})
-            self._proxy.join(10)
+        self.func_dict['close']()
 
     def cmd(self, cmd, use_cache=True, cache=False, flush_cache=False):
         timeout = 12000
@@ -281,6 +281,11 @@ class Device(object):
         self._load_features()
         self.load_system()
 
+    def _close(self):
+        if isinstance(self._proxy, Process) and self._proxy.is_alive():
+            self.cmd({'cmds': [{'cmd': '_exit', 'prompt': ''}]})
+            self._proxy.join(10)
+
     def _mocked_open(self):
         # use 2 because is a second level nesting (test_...(dut, log_level) - open() - _mocked_open())
         frm = inspect.stack()[2]           # pragma: no cover
@@ -303,6 +308,9 @@ class Device(object):
                 self._load_core_facts()                                                     # pragma: no cover
                 self._load_features()                                                       # pragma: no cover
                 self.load_system()                                                          # pragma: no cover
+
+    def _mocked_close(self):
+        pass  # pragma: no cover
 
     def _mock_load_features(self, os, feat):
         if feat == 'device':                                                                                       # pragma: no cover
