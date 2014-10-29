@@ -6,12 +6,27 @@ from mock import patch
 
 def setup_dut(dut):
     dut.reset()
+    dut.prompt = '#'
     dut.add_cmd({'cmd': 'show version', 'state': -1, 'action': 'PRINT', 'args': ["""
-AlliedWare Plus (TM) 5.4.2 09/25/13 12:57:26
 
-Build name : x600-5.4.2-3.14.rel
-Build date : Wed Sep 25 12:57:26 NZST 2013
-Build type : RELEASE
+        Unit             SW version         Boot version         HW version
+------------------- ------------------- ------------------- -------------------
+         1               3.0.0.44            1.0.1.07            00.01.00
+
+    """]})
+    dut.add_cmd({'cmd': 'show system', 'state': -1, 'action': 'PRINT', 'args': ["""
+
+Unit        Type
+---- -------------------
+ 1     AT-8000S/24
+
+
+Unit     Up time
+---- ---------------
+ 1     00,00:14:51
+
+Unit Number:   1
+Serial number:   1122334455
     """]})
 
 
