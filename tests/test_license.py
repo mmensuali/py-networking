@@ -84,7 +84,6 @@ def setup_test_certificate(dut, cert_file, label, key, mac='', tftp_server=False
                     result = s.connect_ex(('127.0.0.1', dut.tftp_port))
                     s.close()
                     if (result > 0):
-                        print 'port {0} is available'.format(dut.tftp_port)
                         break
                     dut.tftp_port = dut.tftp_port + 1
         else:
