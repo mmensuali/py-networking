@@ -110,7 +110,7 @@ Unit        Type
  1
 
 
-Unit     Up time
+Unit     up time
 ---- ---------------
  1     00,00:14:51
 
@@ -125,14 +125,30 @@ Serial Number:   1122334231
 
     """
 
+    out_un = """
+System Description:                       ATI AT-8000S
+System Up Time (days,hour:min:sec):       00,00:02:34
+System Contact:                           name.surname@gmail.com
+System Name:                              nac_dev
+System Location:                          milan
+System MAC Address:                       00:15:77:30:36:00
+System Object ID:                         1.3.6.1.4.1.207.1.4.126
+Serial number:
+Type:                                     AT-8000S/24
+"""
     setup_dut(dut)
     dut.add_cmd({'cmd': 'show system', 'state': 0, 'action': 'PRINT', 'args': [out_sys]})
     dut.add_cmd({'cmd': 'show version', 'state': 0, 'action': 'PRINT', 'args': [out_ver]})
+    dut.add_cmd({'cmd': 'show system unit 1', 'state': 0, 'action': 'PRINT', 'args': [out_un]})
     d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock='n')
     d.open()
     assert d.facts['model'] == 'not found'
+    assert d.facts['sysuptime'] == 'not found'
     assert d.facts['unit_number'] == 'not found'
     assert d.facts['serial_number'] == 'not found'
+    assert d.facts['system contact'] == 'name.surname@gmail.com'
+    assert d.facts['system name'] == 'nac_dev'
+    assert d.facts['system location'] == 'milan'
     d.close()
 
 
