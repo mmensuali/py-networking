@@ -111,23 +111,3 @@ class awp_system(object):
                 break
 
         return is_running_software
-
-    def _get_boot_image(self):
-        boot_image = ''
-        string_to_be_found = 'Current boot image : flash:/'
-
-        # Boot configuration
-        # ----------------------------------------------------------------
-        # Current software   : x210-5.4.4.rel
-        # Current boot image : flash:/x210-5.4.4.rel
-        # Backup  boot image : flash:/x210-5.4.4.rel
-        # Default boot config: flash:/default.cfg
-        # Current boot config: flash:/my.cfg (file exists)
-        # Backup  boot config: flash:/backup.cfg (file not found)
-        for line in self._device.cmd("show boot").split('\n'):
-            self._device.log_debug("read {0}".format(line))
-            if (line.find(string_to_be_found) == 0):
-                boot_image = line[len(string_to_be_found):-1]
-                break
-
-        return boot_image

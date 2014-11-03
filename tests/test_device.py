@@ -32,7 +32,7 @@ Current boot config: flash:/default.cfg (file not found)
 User Configured Territory: europe
 
 System Name
- awplus
+
 System Contact
  contact@alliedtelesis.com
 System Location
@@ -150,7 +150,7 @@ def test_facts(dut, log_level, use_mock):
     assert d.facts['boot config'] == 'default.cfg'
     assert d.facts['boot version'] == '1.1.0'
     assert d.facts['sysuptime'] == '0 days 00:07:29'
-    assert d.facts['system name'] == 'awplus'
+    assert d.facts['system name'] == ''
     assert d.facts['system contact'] == 'contact@alliedtelesis.com'
     assert d.facts['system location'] == 'here'
     d.close()
@@ -405,9 +405,6 @@ Backup  boot config: flash:/backup.cfg (file not found)
         d.system.update_firmware('x210-5.4.3-2.7.rel', protocol='tftp')
     assert 'protocol tftp not supported' in excinfo.value
     d.system.update_firmware(release_file, dontwait=dut.dontwait)
-    if (dut.mode == 'emulated'):
-        # real devices will be rebooting here
-        assert(d.system._get_boot_image() == release_file)
     d.close()
 
     clean_test_firmware_upgrade(dut, release_file)
@@ -449,9 +446,6 @@ Backup  boot config: flash:/backup.cfg (file not found)
     d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock=use_mock)
     d.open()
     d.system.update_firmware(image_name, dontwait=dut.dontwait)
-    if (dut.mode == 'emulated'):
-        # real devices will be rebooting here
-        assert(d.system._get_boot_image() == image_file)
     d.close()
 
     clean_test_firmware_upgrade(dut, image_name)
@@ -505,9 +499,6 @@ Build type : RELEASE
     d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock='n')
     d.open()
     d.system.update_firmware(release_file, dontwait=dut.dontwait)
-    if (dut.mode == 'emulated'):
-        # real devices will be rebooting here
-        assert(d.system._get_boot_image() == release_file)
     d.close()
 
     clean_test_firmware_upgrade(dut, release_file)
@@ -625,9 +616,6 @@ Build type : RELEASE
     d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock='n')
     d.open()
     d.system.update_firmware(release_file, dontwait=dut.dontwait)
-    if (dut.mode == 'emulated'):
-        # real devices will be rebooting here
-        assert(d.system._get_boot_image() == release_file)
     d.close()
 
     clean_test_firmware_upgrade(dut, release_file)
