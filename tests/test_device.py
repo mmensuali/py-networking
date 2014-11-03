@@ -34,9 +34,9 @@ User Configured Territory: europe
 System Name
   awplus
 System Contact
-
+  contact@alliedtelesis.com
 System Location
-
+  here
 """]})
     dut.add_cmd({'cmd': 'show version', 'state': 0, 'action': 'PRINT', 'args': ["""
 AlliedWare Plus (TM) 5.4.2 09/25/13 12:57:26
@@ -147,6 +147,12 @@ def test_facts(dut, log_level, use_mock):
     assert d.facts['build_name'] == 'x600-5.4.2-3.14.rel'
     assert d.facts['build_type'] == 'RELEASE'
     assert d.facts['version'] == '5.4.2'
+    assert d.facts['boot config'] == 'default.cfg'
+    assert d.facts['boot version'] == '1.1.0'
+    assert d.facts['sysuptime'] == '0 days 00:07:29'
+    assert d.facts['system name'] == 'awplus'
+    assert d.facts['system contact'] == 'contact@alliedtelesis.com'
+    assert d.facts['system location'] == 'here'
     d.close()
 
 

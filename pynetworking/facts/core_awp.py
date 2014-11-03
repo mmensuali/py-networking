@@ -38,11 +38,38 @@ def core_awp(dev):
                      ]}
     out = dev.cmd(cmds)
 
+    # Hardware data
     m = re.search('\s+Board\s+ID\s+Bay[\w\s\-]+Base\s+\d+\s+([\w\-\/]+)\s+([\w\-\/]+)\s+([\w\-\/]+)\s+', out)
     if m:
         ret['model'] = m.group(1)
         ret['hardware_rev'] = m.group(2)
         ret['serial_number'] = m.group(3)
+
+    # Boot loader version
+    m = re.search('\Bootloader\s+version\s+:\s+([\d+]).([\d+]).([\d+])', out)
+    if m:
+        ret['boot version'] = '{0}.{1}.{2}'.format(m.group(1), m.group(2), m.group(3))
+
+    # Current configuration file
+    m = re.search('Current\s+boot\s+config:\s+flash:([\w\-\/]+)', out)
+    if m:
+        ret['boot config'] = m.group(1)[1:] + '.cfg'
+
+    # Sys up time
+    m = re.search('Uptime\s+:\s(?P<time>[^\r]+)', out)
+    if m:
+        ret['sysuptime'] = m.group('time')
+
+    # System
+    m = re.search('System\s+Name\s+([\w]+)', out)
+    if m:
+        ret['system name'] = m.group(1)
+    m = re.search('System\s+Contact\s+([\w\@\.]+)', out)
+    if m:
+        ret['system contact'] = m.group(1)
+    m = re.search('System\s+Location\s+([\w]+)', out)
+    if m:
+        ret['system location'] = m.group(1)
 
     # Release license
     if (ret['version'] >= '5.4.4'):
