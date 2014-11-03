@@ -141,7 +141,7 @@ def test_facts(dut, log_level, use_mock):
     if dut.mode != 'emulated':
         pytest.skip("only on emulated")
     setup_dut(dut)
-    d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock=use_mock)
+    d = Device(host=dut.host, port=dut.port, protocol=dut.protocol, log_level=log_level, mock='n')
     d.open()
     assert d.facts['build_date'] == 'Wed Sep 25 12:57:26 NZST 2013'
     assert d.facts['build_name'] == 'x600-5.4.2-3.14.rel'

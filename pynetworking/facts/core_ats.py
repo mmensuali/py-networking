@@ -106,5 +106,4 @@ def core_ats(dev):
     else:
         ret['system location'] = 'not found'
 
-
     return ret

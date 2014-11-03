@@ -61,24 +61,21 @@ def core_awp(dev):
         ret['sysuptime'] = m.group('time')
 
     # System
-    # m = re.search('System\s+Name\r\s+([^\r]+)[\n\r]System\s+Contact\r\s+([^\r]+)', out)#System\s+Location\r\s+([^\r]+)', out)
-    # if m:
-    #     ret['system name'] = m.group(1)
     m = re.search('System\s+Name\r\s+([^\r]+)', out)
     if m:
         ret['system name'] = m.group(1)
+        if ret['system name'] == 'System Contact':
+            ret['system name'] = ''
     m = re.search('System\s+Contact\r\s+([^\r]+)', out)
     if m:
         ret['system contact'] = m.group(1)
+        if ret['system contact'] == 'System Location':
+            ret['system contact'] = ''
     m = re.search('System\s+Location\r\s+([^\r]+)', out)
     if m:
         ret['system location'] = m.group(1)
     else:
         ret['system location'] = ''
-    if ret['system name'] == 'System Contact':
-        ret['system name'] = ''
-    if ret['system contact'] == 'System Location':
-        ret['system contact'] = ''
 
     # Release license
     if (ret['version'] >= '5.4.4'):
