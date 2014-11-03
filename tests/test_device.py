@@ -32,11 +32,11 @@ Current boot config: flash:/default.cfg (file not found)
 User Configured Territory: europe
 
 System Name
-  awplus
+ awplus
 System Contact
-  contact@alliedtelesis.com
+ contact@alliedtelesis.com
 System Location
-  here
+ here
 """]})
     dut.add_cmd({'cmd': 'show version', 'state': 0, 'action': 'PRINT', 'args': ["""
 AlliedWare Plus (TM) 5.4.2 09/25/13 12:57:26
